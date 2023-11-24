@@ -49,7 +49,7 @@ const findSingleUser = async (userId: number) => {
   }
 };
 
-const updateUserInfoInDB = async (userId: number, updateInfo: any) => {
+const updateUserInfoInDB = async (userId: number, updateInfo: TUser) => {
   try {
     if (await MUser.isUserExists(userId)) {
       return await MUser.findOneAndUpdate({ userId }, updateInfo, {
@@ -65,9 +65,24 @@ const updateUserInfoInDB = async (userId: number, updateInfo: any) => {
   }
 };
 
+const deleteOneFromDB = async (userId: number) => {
+  try {
+    if (await MUser.isUserExists(userId)) {
+      return await MUser.findOneAndDelete(userId);
+    } else {
+      throw new Error('User not found!');
+    }
+  } catch (error) {
+    if (error) {
+      throw new Error('User not found');
+    }
+  }
+};
+
 export const UserServices = {
   createUserInDB,
   getAllUsersFromMongoDB,
   findSingleUser,
   updateUserInfoInDB,
+  deleteOneFromDB,
 };
