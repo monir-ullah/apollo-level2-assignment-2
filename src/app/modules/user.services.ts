@@ -2,23 +2,9 @@ import { TUser } from './user.interface';
 import { MUser } from './user.schema';
 
 const createUserInDB = async (userInfo: TUser) => {
-  //   try {
-  //     if (await MUser.findOne({ userId: userInfo.userId })) {
-  //       throw new Error();
-  //     } else {
-  //       const createdUserResult = await MUser.create(userInfo);
-  //       const hidePassword = { ...createdUserResult.toObject() };
-  //       delete hidePassword.password;
-  //       return hidePassword;
-  //     }
-  //   } catch (error) {
-  //     const errorMessage = { success: false, error: 'User already exitst' };
-  //     return errorMessage;
-  //   }
-
   try {
     if (await MUser.isUserExists(userInfo.userId)) {
-      //   throw new Error('');
+      throw new Error('User already exists!');
     }
     const createdUserResult = await MUser.create(userInfo);
     const hidePassword = { ...createdUserResult.toObject() };
@@ -27,7 +13,6 @@ const createUserInDB = async (userInfo: TUser) => {
   } catch (error) {
     return {
       success: false,
-      message: 'Something went wrong!. Can not create new user',
       error,
     };
   }
@@ -55,18 +40,34 @@ const findSingleUser = async (userId: number) => {
         { _id: false, password: false, __v: false },
       );
     } else {
-      throw new Error({ code: 404, description: 'User not found!' });
+      throw new Error('Something Wrong');
     }
   } catch (error) {
-    // return {
-    //   success: false,
-    //   message: 'Something went wrong!. Can not create new user',
-    //   error,
-    // };
+    if (error) {
+      throw new Error('Something Wrong');
+    }
   }
 };
+
+const updateUserInfoInDB = async (userId: number, updateInfo: any) => {
+  try {
+    if (await MUser.isUserExists(userId)) {
+      return await MUser.findOneAndUpdate({ userId }, updateInfo, {
+        returnOriginal: false,
+      });
+    } else {
+      throw new Error('User not found');
+    }
+  } catch (error) {
+    if (error) {
+      throw new Error('User not found');
+    }
+  }
+};
+
 export const UserServices = {
   createUserInDB,
   getAllUsersFromMongoDB,
   findSingleUser,
+  updateUserInfoInDB,
 };
