@@ -3,7 +3,11 @@ import { Model, Schema, model } from 'mongoose';
 import { TOrder, TUser } from './user.interface';
 import config from '../config';
 
-export const userSchema = new Schema<TUser, TOrder>({
+export interface UserModel extends Model<TUser> {
+  isUserExists(userId: number): Promise<TUser | null>;
+}
+
+export const userSchema = new Schema<TUser, UserModel>({
   userId: {
     type: Number,
     unique: true,
@@ -49,18 +53,25 @@ userSchema.pre('save', async function (next) {
 
   next();
 });
+userSchema.static(
+  'isUserExists',
+  async function myStaticMethod(userId: number) {
+    const isUserExists = await MUser.findOne({ userId });
+    return isUserExists;
+  },
+);
+// // createing a stactic method.
+// userSchema.methods.isUserExists = async function name(id: number) {
+//   return await MUser.findOne({ userId: id });
+// };
 
-// createing a stactic method.
-userSchema.methods.isUserExists = async function name(id: number) {
-  return await MUser.findOne({ id });
-};
+// export interface UserMethods {
+//   // eslint-disable-next-line no-unused-vars
+//   isUserExists(id: number): Promise<TUser | null>;
+// }
 
-export interface UserMethods {
-  // eslint-disable-next-line no-unused-vars
-  isUserExists(id: number): Promise<TUser | null>;
-}
-
-export type UserModel = Model<TUser, Record<string, never>, UserMethods>;
+// export type UserModel = Model<TUser, Record<string, never>, UserMethods>;
 
 // Model Creation
+// export const MUser = model<TUser, UserModel>('User', userSchema);
 export const MUser = model<TUser, UserModel>('User', userSchema);
