@@ -79,10 +79,28 @@ const deleteOneFromDB = async (userId: number) => {
   }
 };
 
+const productNewOrderIntoDB = async (userId: number, productBody: unknown) => {
+  try {
+    if (await MUser.isUserExists(userId)) {
+      return await MUser.findOneAndUpdate(
+        { userId },
+        { $push: { orders: productBody } },
+        {
+          returnOriginal: false,
+        },
+      );
+    } else {
+      throw new Error('User not found');
+    }
+  } catch (error) {
+    return error;
+  }
+};
 export const UserServices = {
   createUserInDB,
   getAllUsersFromMongoDB,
   findSingleUser,
   updateUserInfoInDB,
   deleteOneFromDB,
+  productNewOrderIntoDB,
 };

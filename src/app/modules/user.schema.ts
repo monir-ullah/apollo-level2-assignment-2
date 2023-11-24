@@ -6,7 +6,16 @@ import config from '../config';
 export interface UserModel extends Model<TUser> {
   isUserExists(userId: number): Promise<TUser | null>;
 }
-
+export const proudctOrderSchema = new Schema<TOrder[]>([
+  {
+    productName: {
+      type: String,
+      required: [true, 'productName is required.'],
+    },
+    price: { type: Number, required: [true, 'price is required.'] },
+    quantity: { type: Number, required: [true, 'quantity is required.'] },
+  },
+]);
 export const userSchema = new Schema<TUser, UserModel>({
   userId: {
     type: Number,
@@ -32,16 +41,7 @@ export const userSchema = new Schema<TUser, UserModel>({
     city: { type: String, required: [true, 'city is required.'] },
     country: { type: String, required: [true, 'city is required.'] },
   },
-  orders: new Schema<TOrder[]>([
-    {
-      productName: {
-        type: String,
-        required: [true, 'productName is required.'],
-      },
-      price: { type: Number, required: [true, 'price is required.'] },
-      quantity: { type: Number, required: [true, 'quantity is required.'] },
-    },
-  ]),
+  orders: proudctOrderSchema,
 });
 
 // pre middleware

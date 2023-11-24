@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
-import { userJoiSchema } from './user.joi.validation';
+import { joiProductOrderSchmea, userJoiSchema } from './user.joi.validation';
 import { UserServices } from './user.services';
+import { proudctOrderSchema } from './user.schema';
 
 const createUser = async (req: Request, res: Response) => {
   try {
@@ -139,10 +140,48 @@ const deleteUser = async (req: Request, res: Response) => {
   }
 };
 
+const newProductOder = async (req: Request, res: Response) => {
+  const { userId } = req.params;
+  try {
+    const joiProdutOrderValidation = await joiProductOrderSchmea.validateAsync(
+      req.body,
+      {
+        abortEarly: false,
+      },
+    );
+
+    const orderCreated = await UserServices.productNewOrderIntoDB(
+      Number(userId),
+      joiProdutOrderValidation,
+    );
+
+    if (orderCreated instanceof Error) {
+      throw new Error('User not found');
+    } else {
+      res.status(200).json({
+        success: true,
+        message: 'Order created successfully!',
+        data: null,
+      });
+    }
+  } catch (error) {
+    console.log(`from controller ${error}`);
+    res.status(404).json({
+      success: false,
+      message: 'User not found',
+      error: {
+        code: 404,
+        description: 'User not found!',
+      },
+    });
+  }
+};
+
 export const UserControler = {
   createUser,
   getAllUsers,
   findUserById,
   updateUserInfo,
   deleteUser,
+  newProductOder,
 };

@@ -1,5 +1,11 @@
 import Joi from 'joi';
 
+export const joiProductOrderSchmea = Joi.object({
+  productName: Joi.string().required(),
+  price: Joi.number().required(),
+  quantity: Joi.number().required(),
+});
+
 export const userJoiSchema = Joi.object({
   userId: Joi.number().required(),
   username: Joi.string().required(),
@@ -17,11 +23,5 @@ export const userJoiSchema = Joi.object({
     city: Joi.string(),
     country: Joi.string(),
   }),
-  orders: Joi.array().items(
-    Joi.object({
-      productName: Joi.string().required(),
-      price: Joi.number().required(),
-      quantity: Joi.number().required(),
-    }),
-  ),
+  orders: Joi.array().items(joiProductOrderSchmea),
 });
