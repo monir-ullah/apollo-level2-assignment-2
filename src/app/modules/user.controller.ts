@@ -156,7 +156,14 @@ const newProductOder = async (req: Request, res: Response) => {
     );
 
     if (orderCreated instanceof Error) {
-      throw new Error('User not found');
+      res.status(404).json({
+        success: false,
+        message: 'User not found',
+        error: {
+          code: 404,
+          description: 'User not found!',
+        },
+      });
     } else {
       res.status(200).json({
         success: true,
@@ -164,15 +171,13 @@ const newProductOder = async (req: Request, res: Response) => {
         data: null,
       });
     }
-  } catch (error) {
-    console.log(`from controller ${error}`);
+  } catch (error: any) {
+    const errorList = error.details.map((errorItem) => errorItem.message);
+
     res.status(404).json({
       success: false,
-      message: 'User not found',
-      error: {
-        code: 404,
-        description: 'User not found!',
-      },
+      message: 'Validation error',
+      error: errorList,
     });
   }
 };
