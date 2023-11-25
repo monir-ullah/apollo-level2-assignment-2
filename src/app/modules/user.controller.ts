@@ -21,7 +21,7 @@ const createUser = async (req: Request, res: Response) => {
       return res.status(500).json({
         success: false,
         message: 'Can not create new user',
-        error: result,
+        error: 'User already exists!',
       });
     } else {
       return res.status(200).json({
