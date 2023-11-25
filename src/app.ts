@@ -14,6 +14,7 @@ app.get('/', (req, res) => {
 
   res.status(200).send({
     status: 'sucess',
+    message: 'Assignment',
     data: body,
   });
 });

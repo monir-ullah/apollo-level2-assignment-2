@@ -1,5 +1,5 @@
 import { mongoDbClientConnection } from '../../server';
-import config from '../config';
+import { UserNotFoundError } from './user.customerror';
 import { TUser } from './user.interface';
 import { MUser } from './user.schema';
 
@@ -58,12 +58,10 @@ const updateUserInfoInDB = async (userId: number, updateInfo: TUser) => {
         returnOriginal: false,
       });
     } else {
-      throw new Error('User not found');
+      throw new UserNotFoundError('');
     }
   } catch (error) {
-    if (error) {
-      throw new Error('User not found');
-    }
+    return error;
   }
 };
 
@@ -99,14 +97,34 @@ const productNewOrderIntoDB = async (userId: number, productBody: unknown) => {
   }
 };
 
-const findUserOrderListInDB = async (userId: number) => {
+const findOrderListORCalculateTotalfromDB = async (
+  userId: number,
+  isCalculateTotal: boolean,
+) => {
   try {
     if (await MUser.isUserExists(userId)) {
       const userOrderList = await mongoDbClientConnection(userId);
-      // const { orders } = userOrderList[0];
       const { orders } = userOrderList;
 
-      return { orders: orders.map(({ _id, ...restData }) => restData) };
+      if (orders) {
+        if (isCalculateTotal === false) {
+          return {
+            orders: orders.map(({ _id, ...withOutData }) => withOutData),
+          };
+        } else if (isCalculateTotal === true) {
+          let singleItemTotalPrice = orders.map(
+            (item: AnyObject) => item.price * item.quantity,
+          );
+          let totalPrice = 0;
+          singleItemTotalPrice.forEach((price: number) => {
+            totalPrice += price;
+          });
+
+          return { totalPrice };
+        }
+      } else {
+        return 'Order not found';
+      }
     } else {
       throw new Error('User not found');
     }
@@ -122,5 +140,5 @@ export const UserServices = {
   updateUserInfoInDB,
   deleteOneFromDB,
   productNewOrderIntoDB,
-  findUserOrderListInDB,
+  findOrderListORCalculateTotalfromDB,
 };

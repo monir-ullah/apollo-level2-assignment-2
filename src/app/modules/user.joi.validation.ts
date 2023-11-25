@@ -25,3 +25,23 @@ export const userJoiSchema = Joi.object({
   }),
   orders: Joi.array().items(joiProductOrderSchmea),
 });
+
+export const updateUserJoiSchema = Joi.object({
+  userId: Joi.number(),
+  username: Joi.string(),
+  password: Joi.string(),
+  fullName: Joi.object({
+    firstName: Joi.string().required(),
+    lastName: Joi.string().required(),
+  }),
+  age: Joi.number(),
+  email: Joi.string().email(),
+  isActive: Joi.boolean(),
+  hobbies: Joi.array().items(Joi.string()),
+  address: Joi.object({
+    street: Joi.string().required(),
+    city: Joi.string().required(),
+    country: Joi.string().required(),
+  }),
+  orders: Joi.array().items(joiProductOrderSchmea),
+});

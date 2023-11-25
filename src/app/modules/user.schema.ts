@@ -60,18 +60,5 @@ userSchema.static(
     return isUserExists;
   },
 );
-// // createing a stactic method.
-// userSchema.methods.isUserExists = async function name(id: number) {
-//   return await MUser.findOne({ userId: id });
-// };
 
-// export interface UserMethods {
-//   // eslint-disable-next-line no-unused-vars
-//   isUserExists(id: number): Promise<TUser | null>;
-// }
-
-// export type UserModel = Model<TUser, Record<string, never>, UserMethods>;
-
-// Model Creation
-// export const MUser = model<TUser, UserModel>('User', userSchema);
 export const MUser = model<TUser, UserModel>('User', userSchema);

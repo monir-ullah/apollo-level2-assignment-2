@@ -1,5 +1,4 @@
 import { connect } from 'mongoose';
-import assert from 'assert';
 import app from './app';
 import config from './app/config';
 import { MongoClient } from 'mongodb';
@@ -11,13 +10,13 @@ async function serverStart() {
       console.log(`Server is running on port ${config.port}`);
     });
   } catch (error) {
-    console.log(error);
+    return error;
   }
 }
 serverStart();
 
 export const mongoDbClientConnection = async (userId) => {
-  const connectionUlr: string = config.database_url;
+  const connectionUlr: string = String(config.database_url);
   const mongoDBClient = new MongoClient(connectionUlr);
 
   try {
