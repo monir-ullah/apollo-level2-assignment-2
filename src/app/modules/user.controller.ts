@@ -173,11 +173,41 @@ const newProductOder = async (req: Request, res: Response) => {
     }
   } catch (error: any) {
     const errorList = error.details.map((errorItem) => errorItem.message);
-
     res.status(404).json({
       success: false,
       message: 'Validation error',
       error: errorList,
+    });
+  }
+};
+
+const specificUserOrders = async (req: Request, res: Response) => {
+  const { userId } = req.params;
+  try {
+    const userOrderList = await UserServices.findUserOrderListInDB(
+      Number(userId),
+    );
+    if (userOrderList instanceof Error) {
+      res.status(404).json({
+        success: false,
+        message: 'User not found',
+        error: {
+          code: 404,
+          description: 'User not found!',
+        },
+      });
+    } else {
+      res.status(200).json({
+        success: true,
+        message: 'Order fetched successfully!',
+        data: userOrderList,
+      });
+    }
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: 'Could not fetchs Orders',
+      data: error,
     });
   }
 };
@@ -189,4 +219,5 @@ export const UserControler = {
   updateUserInfo,
   deleteUser,
   newProductOder,
+  specificUserOrders,
 };

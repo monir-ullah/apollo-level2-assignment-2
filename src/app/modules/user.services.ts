@@ -1,3 +1,5 @@
+import { mongoDbClientConnection } from '../../server';
+import config from '../config';
 import { TUser } from './user.interface';
 import { MUser } from './user.schema';
 
@@ -96,6 +98,23 @@ const productNewOrderIntoDB = async (userId: number, productBody: unknown) => {
     return error;
   }
 };
+
+const findUserOrderListInDB = async (userId: number) => {
+  try {
+    if (await MUser.isUserExists(userId)) {
+      const userOrderList = await mongoDbClientConnection(userId);
+      // const { orders } = userOrderList[0];
+      const { orders } = userOrderList;
+
+      return { orders: orders.map(({ _id, ...restData }) => restData) };
+    } else {
+      throw new Error('User not found');
+    }
+  } catch (error) {
+    return error;
+  }
+};
+
 export const UserServices = {
   createUserInDB,
   getAllUsersFromMongoDB,
@@ -103,4 +122,5 @@ export const UserServices = {
   updateUserInfoInDB,
   deleteOneFromDB,
   productNewOrderIntoDB,
+  findUserOrderListInDB,
 };

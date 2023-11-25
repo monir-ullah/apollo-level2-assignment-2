@@ -1,6 +1,8 @@
 import { connect } from 'mongoose';
+import assert from 'assert';
 import app from './app';
 import config from './app/config';
+import { MongoClient } from 'mongodb';
 
 async function serverStart() {
   try {
@@ -13,3 +15,19 @@ async function serverStart() {
   }
 }
 serverStart();
+
+export const mongoDbClientConnection = async (userId) => {
+  const connectionUlr: string = config.database_url;
+  const mongoDBClient = new MongoClient(connectionUlr);
+
+  try {
+    await mongoDBClient.connect();
+    const result = await mongoDBClient
+      .db('assignment2')
+      .collection('users')
+      .findOne({ userId }, { orders: true });
+    return result;
+  } catch (error) {
+    return 'Colud not connect with mongdobd';
+  }
+};
