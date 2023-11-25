@@ -1,3 +1,5 @@
+// user interface and type
+
 export type TOrder = {
   productName: string;
   price: number;

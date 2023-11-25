@@ -13,9 +13,17 @@ app.get('/', (req, res) => {
   const body = req.body;
 
   res.status(200).send({
-    status: 'sucess',
+    success: true,
     message: 'Assignment',
     data: body,
+  });
+});
+
+app.get('*', function (req, res) {
+  res.status(404).json({
+    success: false,
+    message: 'You tried wrong url/api link. Please try again.',
+    data: req.body,
   });
 });
 

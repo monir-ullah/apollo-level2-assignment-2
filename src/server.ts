@@ -4,6 +4,7 @@ import app from './app';
 import config from './app/config';
 import { MongoClient } from 'mongodb';
 
+// This function is starting the server
 async function serverStart() {
   try {
     await connect(config.database_url as string);
@@ -16,6 +17,7 @@ async function serverStart() {
 }
 serverStart();
 
+// this functin will create mongodb connectin and find specific user orders
 export const mongoDbClientConnection = async (userId: unknown) => {
   const connectionUlr: string = String(config.database_url);
   const mongoDBClient = new MongoClient(connectionUlr);

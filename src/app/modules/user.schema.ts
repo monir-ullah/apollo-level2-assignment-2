@@ -3,10 +3,13 @@ import { Model, Schema, model } from 'mongoose';
 import { TOrder, TUser } from './user.interface';
 import config from '../config';
 
+// interface for isUserExists cheaking
 export interface UserModel extends Model<TUser> {
   // eslint-disable-next-line no-unused-vars
   isUserExists(userId: number): Promise<TUser | null>;
 }
+
+// Product Order Schema for validation
 export const proudctOrderSchema = new Schema<TOrder[]>([
   {
     productName: {
@@ -17,6 +20,8 @@ export const proudctOrderSchema = new Schema<TOrder[]>([
     quantity: { type: Number, required: [true, 'quantity is required.'] },
   },
 ]);
+
+// User Schema for validation
 export const userSchema = new Schema<TUser, UserModel>({
   userId: {
     type: Number,
@@ -54,6 +59,8 @@ userSchema.pre('save', async function (next) {
 
   next();
 });
+
+// static method for define is a user exist or not
 userSchema.static(
   'isUserExists',
   async function myStaticMethod(userId: number) {

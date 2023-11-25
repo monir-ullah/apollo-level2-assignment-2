@@ -1,11 +1,13 @@
 import Joi from 'joi';
 
+// Product order Schema validation
 export const joiProductOrderSchmea = Joi.object({
   productName: Joi.string().required(),
   price: Joi.number().required(),
   quantity: Joi.number().required(),
 });
 
+// User Schema validation
 export const userJoiSchema = Joi.object({
   userId: Joi.number().required(),
   username: Joi.string().required(),
@@ -26,6 +28,7 @@ export const userJoiSchema = Joi.object({
   orders: Joi.array().items(joiProductOrderSchmea),
 });
 
+// Update User Schema validation
 export const updateUserJoiSchema = Joi.object({
   userId: Joi.number(),
   username: Joi.string(),

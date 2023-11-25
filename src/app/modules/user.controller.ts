@@ -8,6 +8,7 @@ import {
 import { UserServices } from './user.services';
 import { UserNotFoundError } from './user.customerror';
 
+// Handle Request and Response for user creation with validation
 const createUser = async (req: Request, res: Response) => {
   try {
     const userBody = req.body;
@@ -39,6 +40,8 @@ const createUser = async (req: Request, res: Response) => {
     }
   }
 };
+
+// Written for view all user information
 const getAllUsers = async (req: Request, res: Response) => {
   try {
     const allUsersResult = await UserServices.getAllUsersFromMongoDB();
@@ -57,6 +60,7 @@ const getAllUsers = async (req: Request, res: Response) => {
   }
 };
 
+// Write for user find
 const findUserById = async (req: Request, res: Response) => {
   const { userId } = req.params;
 
@@ -85,6 +89,7 @@ const findUserById = async (req: Request, res: Response) => {
   }
 };
 
+// Handle user update info Request, Response
 const updateUserInfo = async (req: Request, res: Response) => {
   const { userId } = req.params;
   try {
@@ -127,7 +132,7 @@ const updateUserInfo = async (req: Request, res: Response) => {
     });
   }
 };
-
+// Delete a user if exist
 const deleteUser = async (req: Request, res: Response) => {
   const { userId } = req.params;
   try {
@@ -149,6 +154,7 @@ const deleteUser = async (req: Request, res: Response) => {
   }
 };
 
+// Handle New product order with validation  Request and Response
 const newProductOder = async (req: Request, res: Response) => {
   const { userId } = req.params;
   try {
@@ -190,6 +196,7 @@ const newProductOder = async (req: Request, res: Response) => {
   }
 };
 
+// Handle Specific User OrderList  req and response
 const specificUserorderList = async (req: Request, res: Response) => {
   const { userId } = req.params;
   try {
@@ -223,6 +230,7 @@ const specificUserorderList = async (req: Request, res: Response) => {
   }
 };
 
+// Handle total Price req and response
 const specificUserTotalPrice = async (req: Request, res: Response) => {
   const { userId } = req.params;
   try {

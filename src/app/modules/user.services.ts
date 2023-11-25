@@ -140,6 +140,7 @@ const findOrderListORCalculateTotalfromDB = async (
   }
 };
 
+// Export all importent function for others use
 export const UserServices = {
   createUserInDB,
   getAllUsersFromMongoDB,
