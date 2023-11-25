@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { connect } from 'mongoose';
 import app from './app';
 import config from './app/config';
@@ -15,7 +16,7 @@ async function serverStart() {
 }
 serverStart();
 
-export const mongoDbClientConnection = async (userId) => {
+export const mongoDbClientConnection = async (userId: unknown) => {
   const connectionUlr: string = String(config.database_url);
   const mongoDBClient = new MongoClient(connectionUlr);
 
@@ -24,7 +25,7 @@ export const mongoDbClientConnection = async (userId) => {
     const result = await mongoDBClient
       .db('assignment2')
       .collection('users')
-      .findOne({ userId }, { orders: true });
+      .findOne({ userId }, { projection: { orders: true } });
     return result;
   } catch (error) {
     return 'Colud not connect with mongdobd';

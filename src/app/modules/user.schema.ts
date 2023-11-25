@@ -4,6 +4,7 @@ import { TOrder, TUser } from './user.interface';
 import config from '../config';
 
 export interface UserModel extends Model<TUser> {
+  // eslint-disable-next-line no-unused-vars
   isUserExists(userId: number): Promise<TUser | null>;
 }
 export const proudctOrderSchema = new Schema<TOrder[]>([

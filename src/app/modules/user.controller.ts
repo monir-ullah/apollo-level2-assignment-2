@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Request, Response } from 'express';
 import {
   joiProductOrderSchmea,
@@ -15,17 +16,11 @@ const createUser = async (req: Request, res: Response) => {
     });
 
     const result = await UserServices.createUserInDB(joiValidation);
-    if (result.success == false) {
-      let errorMesg;
-      if (result.error.message.search(/userid/gi || /username/gi) != -1) {
-        errorMesg = 'User alread exist!';
-      } else {
-        errorMesg = result.error.message;
-      }
+    if (result instanceof Error) {
       return res.status(500).json({
         success: false,
         message: 'Can not create new user',
-        error: errorMesg,
+        error: result,
       });
     } else {
       return res.status(200).json({
@@ -52,7 +47,8 @@ const getAllUsers = async (req: Request, res: Response) => {
       message: 'Users fetched sucesfully!',
       data: allUsersResult,
     });
-  } catch (error) {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  } catch (error: any) {
     res.status(500).json({
       success: false,
       message: error.message || 'Something went wrong',
@@ -121,8 +117,9 @@ const updateUserInfo = async (req: Request, res: Response) => {
         });
       }
     }
-  } catch (error) {
-    const errorList = error.details.map((errorItem) => errorItem.message);
+  } catch (error: any) {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const errorList = error.details.map((errorItem: any) => errorItem.message);
     res.status(500).json({
       success: false,
       message: 'Validation error',

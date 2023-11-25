@@ -1,3 +1,4 @@
+import { ObjectId } from 'mongoose';
 import { mongoDbClientConnection } from '../../server';
 import { UserNotFoundError } from './user.customerror';
 import { TUser } from './user.interface';
@@ -10,13 +11,11 @@ const createUserInDB = async (userInfo: TUser) => {
     }
     const createdUserResult = await MUser.create(userInfo);
     const hidePassword = { ...createdUserResult.toObject() };
-    delete hidePassword.password;
-    return hidePassword;
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars, no-unused-vars
+    const { password, ...objectWithOutPassword } = hidePassword;
+    return objectWithOutPassword;
   } catch (error) {
-    return {
-      success: false,
-      error,
-    };
+    return error;
   }
 };
 
@@ -68,7 +67,7 @@ const updateUserInfoInDB = async (userId: number, updateInfo: TUser) => {
 const deleteOneFromDB = async (userId: number) => {
   try {
     if (await MUser.isUserExists(userId)) {
-      return await MUser.findOneAndDelete(userId);
+      return await MUser.findOneAndDelete({ userId: userId });
     } else {
       throw new Error('User not found!');
     }
@@ -104,16 +103,24 @@ const findOrderListORCalculateTotalfromDB = async (
   try {
     if (await MUser.isUserExists(userId)) {
       const userOrderList = await mongoDbClientConnection(userId);
-      const { orders } = userOrderList;
+      const { orders } = userOrderList as {
+        orders?: {
+          productName: string;
+          price: number;
+          quantity: number;
+          _id: ObjectId;
+        }[];
+      };
 
       if (orders) {
         if (isCalculateTotal === false) {
           return {
+            // eslint-disable-next-line no-unused-vars, @typescript-eslint/no-unused-vars
             orders: orders.map(({ _id, ...withOutData }) => withOutData),
           };
         } else if (isCalculateTotal === true) {
-          let singleItemTotalPrice = orders.map(
-            (item: AnyObject) => item.price * item.quantity,
+          const singleItemTotalPrice: number[] = orders.map(
+            (item) => item.price * item.quantity,
           );
           let totalPrice = 0;
           singleItemTotalPrice.forEach((price: number) => {
